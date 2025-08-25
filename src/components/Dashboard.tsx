@@ -1,7 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Application, ApplicationStatus, DecisionType } from '@/types';
+import {
+  Application,
+  ApplicationStatus,
+  DecisionType,
+  UserRole,
+  User,
+} from '@/types';
 import { format } from 'date-fns';
 import {
   AcademicCapIcon,
@@ -9,19 +15,15 @@ import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
   ChartBarIcon,
+  EyeIcon,
 } from '@heroicons/react/24/outline';
-import {
-  mockStudent,
-  mockUniversities,
-  mockApplications,
-} from '@/lib/mockData';
-import { prisma } from '@/lib/prisma';
 
 interface DashboardProps {
   applications: Application[];
+  user: User | null;
 }
 
-export default function Dashboard({ applications = [] }: DashboardProps) {
+export default function Dashboard({ applications = [], user }: DashboardProps) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export default function Dashboard({ applications = [] }: DashboardProps) {
               <AcademicCapIcon className='h-6 w-6 text-blue-600' />
             </div>
             <div className='ml-3'>
-              <p className='text-sm font-medium text-gray-600'>总申请数</p>
+              <p className='text-sm font-medium text-gray-600'>总申请</p>
               <p className='text-2xl font-bold text-gray-900'>
                 {totalApplications}
               </p>
@@ -260,8 +262,8 @@ export default function Dashboard({ applications = [] }: DashboardProps) {
         </div>
       )}
 
-      {/* 快速操作 */}
-      <div className='bg-white rounded-lg shadow p-6'>
+      {/* 通用快速操作 */}
+      {/* <div className='bg-white rounded-lg shadow p-6'>
         <h3 className='text-lg font-semibold text-gray-900 mb-4'>快速操作</h3>
         <div className='space-y-3'>
           <button className='w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors'>
@@ -280,8 +282,19 @@ export default function Dashboard({ applications = [] }: DashboardProps) {
               </span>
             </div>
           </button>
+
+          {user?.role === UserRole.PARENT && (
+            <button className='w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors'>
+              <div className='flex items-center'>
+                <EyeIcon className='h-5 w-5 text-indigo-500 mr-3' />
+                <span className='text-sm font-medium text-gray-900'>
+                  查看孩子详情
+                </span>
+              </div>
+            </button>
+          )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -11,30 +11,34 @@ import { format } from 'date-fns';
 import {
   PencilIcon,
   TrashIcon,
-  CheckCircleIcon,
   ClockIcon,
   ExclamationTriangleIcon,
   ChatBubbleLeftIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from './AuthProvider';
 import { ParentNoteForm } from './ParentNoteForm';
+import { getApplicationTypeText } from '@/lib/utils';
+import { useToast, ToastContainer } from './Toast';
 
 interface ApplicationListProps {
   applications: Application[];
   onUpdate: (applicationId: string, updates: Partial<Application>) => void;
   onDelete: (applicationId: string) => void;
+  onRefresh?: () => void;
 }
 
 export default function ApplicationList({
   applications,
   onUpdate,
   onDelete,
+  onRefresh,
 }: ApplicationListProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<Partial<Application>>({});
   const [isClient, setIsClient] = useState(false);
   const [showNoteForm, setShowNoteForm] = useState<string | null>(null);
   const { user } = useAuth();
+  const toast = useToast();
 
   useEffect(() => {
     setIsClient(true);
@@ -176,25 +180,32 @@ export default function ApplicationList({
                 !isDeadlineOverdue(application.deadline) && (
                   <ClockIcon className='h-5 w-5 text-yellow-500' />
                 )}
-              <button
-                onClick={() => handleEdit(application)}
-                className='p-1 text-gray-400 hover:text-gray-600'
-              >
-                <PencilIcon className='h-4 w-4' />
-              </button>
-              <button
-                onClick={() => onDelete(application.id)}
-                className='p-1 text-gray-400 hover:text-red-600'
-              >
-                <TrashIcon className='h-4 w-4' />
-              </button>
+              {user?.role === UserRole.STUDENT && (
+                <button
+                  onClick={() => handleEdit(application)}
+                  className='p-1 text-gray-400 hover:text-gray-600'
+                >
+                  <PencilIcon className='h-4 w-4' />
+                </button>
+              )}
+
+              {user?.role === UserRole.STUDENT && (
+                <button
+                  onClick={() => onDelete(application.id)}
+                  className='p-1 text-gray-400 hover:text-red-600'
+                >
+                  <TrashIcon className='h-4 w-4' />
+                </button>
+              )}
             </div>
           </div>
 
           <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-sm'>
             <div>
               <span className='text-gray-500'>申请类型:</span>
-              <p className='font-medium'>{application.applicationType}</p>
+              <p className='font-medium'>
+                {getApplicationTypeText(application.applicationType)}
+              </p>
             </div>
             <div>
               <span className='text-gray-500'>截止日期:</span>
@@ -280,7 +291,10 @@ export default function ApplicationList({
                 applicationId={application.id}
                 onNoteAdded={() => {
                   setShowNoteForm(null);
-                  // 这里可以刷新数据
+                  // 刷新申请列表数据
+                  if (onRefresh) {
+                    onRefresh();
+                  }
                 }}
                 onCancel={() => setShowNoteForm(null)}
               />
@@ -374,6 +388,9 @@ export default function ApplicationList({
           )}
         </div>
       ))}
+
+      {/* Toast 通知容器 */}
+      <ToastContainer toasts={toast.toasts} onRemove={toast.removeToast} />
     </div>
   );
 }

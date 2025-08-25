@@ -1,15 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { University } from '@/types';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { University, Application } from '@/types';
+import {
+  MagnifyingGlassIcon,
+  CheckCircleIcon,
+} from '@heroicons/react/24/outline';
 
 interface UniversitySearchProps {
   onUniversitySelect: (university: University) => void;
+  applications?: Application[];
 }
 
 export default function UniversitySearch({
   onUniversitySelect,
+  applications = [],
 }: UniversitySearchProps) {
   const [universities, setUniversities] = useState<University[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -50,6 +55,11 @@ export default function UniversitySearch({
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchUniversities();
+  };
+
+  // 检查学校是否已经被申请
+  const isUniversityApplied = (universityId: string) => {
+    return applications.some((app) => app.university?.id === universityId);
   };
 
   return (
@@ -123,6 +133,16 @@ export default function UniversitySearch({
         </div>
       </form>
 
+      {/* 说明信息 */}
+      {applications.length > 0 && (
+        <div className='bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3'>
+          <p className='text-sm text-blue-700'>
+            💡 <strong>提示</strong>:
+            已申请的学校会以置灰状态显示，并标记为&ldquo;已申请&rdquo;。
+          </p>
+        </div>
+      )}
+
       {/* 大学列表 */}
       <div className='space-y-2 max-h-96 overflow-y-auto'>
         {loading ? (
@@ -135,42 +155,83 @@ export default function UniversitySearch({
             没有找到匹配的大学
           </div>
         ) : (
-          universities.map((university) => (
-            <div
-              key={university.id}
-              className='border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors'
-              onClick={() => onUniversitySelect(university)}
-            >
-              <div className='flex justify-between items-start'>
-                <div className='flex-1'>
-                  <h3 className='font-semibold text-gray-900'>
-                    {university.name}
-                  </h3>
-                  <p className='text-sm text-gray-600'>
-                    {university.city}, {university.state} • {university.country}
-                  </p>
-                  <div className='flex items-center space-x-4 mt-2 text-sm text-gray-500'>
-                    {university.usNewsRanking && (
-                      <span>排名: #{university.usNewsRanking}</span>
+          universities.map((university) => {
+            const isApplied = isUniversityApplied(university.id);
+            return (
+              <div
+                key={university.id}
+                className={`border rounded-lg p-4 transition-colors ${
+                  isApplied
+                    ? 'border-gray-300 bg-gray-100 cursor-not-allowed opacity-60'
+                    : 'border-gray-200 bg-white hover:bg-gray-50 cursor-pointer'
+                }`}
+                onClick={() => !isApplied && onUniversitySelect(university)}
+              >
+                <div className='flex justify-between items-start'>
+                  <div className='flex-1'>
+                    <div className='flex items-center space-x-2'>
+                      <h3
+                        className={`font-semibold ${
+                          isApplied ? 'text-gray-500' : 'text-gray-900'
+                        }`}
+                      >
+                        {university.name}
+                      </h3>
+                      {isApplied && (
+                        <CheckCircleIcon className='h-5 w-5 text-green-500' />
+                      )}
+                    </div>
+                    <p
+                      className={`text-sm ${
+                        isApplied ? 'text-gray-400' : 'text-gray-600'
+                      }`}
+                    >
+                      {university.city}, {university.state} •{' '}
+                      {university.country}
+                    </p>
+                    <div
+                      className={`flex items-center space-x-4 mt-2 text-sm ${
+                        isApplied ? 'text-gray-400' : 'text-gray-500'
+                      }`}
+                    >
+                      {university.usNewsRanking && (
+                        <span>排名: #{university.usNewsRanking}</span>
+                      )}
+                      {university.acceptanceRate && (
+                        <span>
+                          录取率: {(university.acceptanceRate * 100).toFixed(1)}
+                          %
+                        </span>
+                      )}
+                      <span>系统: {university.applicationSystem}</span>
+                    </div>
+                  </div>
+                  <div className='text-right'>
+                    {university.applicationFee && (
+                      <p
+                        className={`text-sm ${
+                          isApplied ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        申请费: ${university.applicationFee}
+                      </p>
                     )}
-                    {university.acceptanceRate && (
-                      <span>
-                        录取率: {(university.acceptanceRate * 100).toFixed(1)}%
-                      </span>
-                    )}
-                    <span>系统: {university.applicationSystem}</span>
                   </div>
                 </div>
-                <div className='text-right'>
-                  {university.applicationFee && (
-                    <p className='text-sm text-gray-600'>
-                      申请费: ${university.applicationFee}
-                    </p>
-                  )}
-                </div>
+
+                {/* 已申请提示 */}
+                {isApplied && (
+                  <div className='mt-3 pt-3 border-t border-gray-200'>
+                    <div className='flex items-center justify-center'>
+                      <span className='text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full'>
+                        已申请 ✓
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

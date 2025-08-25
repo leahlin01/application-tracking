@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthProvider';
 import { UserRole } from '../types';
+import { useToast, ToastContainer } from './Toast';
 
 interface ParentNoteFormProps {
   applicationId: string;
@@ -19,6 +20,7 @@ export const ParentNoteForm: React.FC<ParentNoteFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { user } = useAuth();
+  const toast = useToast();
 
   // 只有家长可以添加备注
   if (user?.role !== UserRole.PARENT) {
@@ -52,12 +54,17 @@ export const ParentNoteForm: React.FC<ParentNoteFormProps> = ({
       if (response.ok) {
         setContent('');
         onNoteAdded();
+        toast.success('备注添加成功');
       } else {
         const errorData = await response.json();
-        setError(errorData.error || '添加备注失败');
+        const errorMessage = errorData.error || '添加备注失败';
+        setError(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (error) {
-      setError('网络错误，请重试');
+      const errorMessage = '网络错误，请重试';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -109,6 +116,9 @@ export const ParentNoteForm: React.FC<ParentNoteFormProps> = ({
           </button>
         </div>
       </form>
+
+      {/* Toast 通知容器 */}
+      <ToastContainer toasts={toast.toasts} onRemove={toast.removeToast} />
     </div>
   );
 };

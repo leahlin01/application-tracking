@@ -4,77 +4,33 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Navigation } from '@/components/Navigation';
-import {
-  University,
-  Application,
-  ApplicationType,
-  ApplicationStatus,
-  UserRole,
-} from '@/types';
+import { University, Application, ApplicationType, UserRole } from '@/types';
 import UniversitySearch from '@/components/UniversitySearch';
 import ApplicationList from '@/components/ApplicationList';
 import ApplicationForm from '@/components/ApplicationForm';
 import Dashboard from '@/components/Dashboard';
 import { StudentBinding } from '@/components/StudentBinding';
-import {
-  mockStudent,
-  mockUniversities,
-  mockApplications,
-} from '@/lib/mockData';
+import UniversityComparison from '@/components/UniversityComparison';
+import ParentDashboard from '@/components/ParentDashboard';
+import { useToast, ToastContainer } from '@/components/Toast';
 
 // 主应用内容组件
 function MainApplication() {
-  const [universities, setUniversities] = useState<University[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [universities, setUniversities] = useState<University[]>([]);
   const [selectedUniversity, setSelectedUniversity] =
     useState<University | null>(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-
-  // 根据用户角色获取学生ID
-  const getStudentId = () => {
-    if (user?.role === UserRole.STUDENT) {
-      return user.studentId;
-    }
-    // 家长和老师可以查看所有申请，暂时返回null表示查看所有
-    return null;
-  };
-
-  const studentId = getStudentId();
-
-  const initializeData = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/seed', {
-        method: 'POST',
-      });
-
-      if (!response.ok) {
-        return;
-      }
-
-      const result = await response.json();
-      console.log(result.message);
-
-      // 重新获取申请数据
-      await fetchApplications();
-
-      // 显示成功消息
-      alert('数据库初始化成功！');
-    } catch (error) {
-      console.error('初始化数据失败:', error);
-      alert(
-        '初始化数据失败: ' +
-          (error instanceof Error ? error.message : '未知错误')
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [selectedUniversities, setSelectedUniversities] = useState<
+    University[]
+  >([]);
+  const toast = useToast();
 
   useEffect(() => {
     fetchApplications();
+    fetchUniversities();
   }, []);
 
   const fetchApplications = async () => {
@@ -106,9 +62,33 @@ function MainApplication() {
     }
   };
 
+  const fetchUniversities = async () => {
+    try {
+      const response = await fetch('/api/universities', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+      setUniversities(data);
+    } catch (error) {
+      console.error('获取大学列表失败:', error);
+      setUniversities([]);
+    }
+  };
+
   const handleUniversitySelect = (university: University) => {
-    setSelectedUniversity(university);
-    setShowApplicationForm(true);
+    if (user?.role === UserRole.STUDENT) {
+      setSelectedUniversity(university);
+      setShowApplicationForm(true);
+    } else {
+      toast.error('家长不能添加申请');
+    }
   };
 
   const handleApplicationSubmit = async (formData: {
@@ -136,6 +116,7 @@ function MainApplication() {
       });
 
       if (!response.ok) {
+        toast.error('创建申请失败');
         return;
       }
 
@@ -143,8 +124,10 @@ function MainApplication() {
       setApplications((prev) => [...prev, newApplication]);
       setShowApplicationForm(false);
       setSelectedUniversity(null);
+      toast.success('申请创建成功');
     } catch (error) {
       console.error('创建申请失败:', error);
+      toast.error('创建申请失败，请重试');
     }
   };
 
@@ -163,6 +146,7 @@ function MainApplication() {
       });
 
       if (!response.ok) {
+        toast.error('更新申请失败');
         return;
       }
 
@@ -173,9 +157,11 @@ function MainApplication() {
             app.id === applicationId ? updatedApplication : app
           )
         );
+        toast.success('申请更新成功');
       }
     } catch (error) {
       console.error('更新申请失败:', error);
+      toast.error('更新申请失败，请重试');
     }
   };
 
@@ -189,6 +175,7 @@ function MainApplication() {
       });
 
       if (!response.ok) {
+        toast.error('删除申请失败');
         return;
       }
 
@@ -197,9 +184,11 @@ function MainApplication() {
         setApplications((prev) =>
           prev.filter((app) => app.id !== applicationId)
         );
+        toast.success('申请删除成功');
       }
     } catch (error) {
       console.error('删除申请失败:', error);
+      toast.error('删除申请失败，请重试');
     }
   };
 
@@ -276,7 +265,7 @@ function MainApplication() {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* 左侧：仪表板和学生绑定 */}
           <div className='lg:col-span-1 space-y-6'>
-            <Dashboard applications={applications} />
+            <Dashboard applications={applications} user={user} />
             {user?.role === UserRole.PARENT && <StudentBinding />}
           </div>
 
@@ -287,7 +276,10 @@ function MainApplication() {
               <h2 className='text-xl font-semibold text-gray-900 mb-4'>
                 搜索大学
               </h2>
-              <UniversitySearch onUniversitySelect={handleUniversitySelect} />
+              <UniversitySearch
+                onUniversitySelect={handleUniversitySelect}
+                applications={applications}
+              />
             </div>
 
             {/* 申请列表 */}
@@ -299,8 +291,34 @@ function MainApplication() {
                 applications={applications}
                 onUpdate={handleApplicationUpdate}
                 onDelete={handleApplicationDelete}
+                onRefresh={fetchApplications}
               />
             </div>
+
+            {/* 学生专属功能 */}
+            {user?.role === UserRole.STUDENT && (
+              <>
+                {/* 大学比较工具 */}
+                <div className='bg-white rounded-lg shadow p-6'>
+                  <div className='flex justify-between items-center mb-4'>
+                    <h3 className='text-lg font-semibold text-gray-900'>
+                      大学比较
+                    </h3>
+                  </div>
+                  <UniversityComparison
+                    universities={universities}
+                    selectedUniversities={selectedUniversities}
+                    onSelectionChange={setSelectedUniversities}
+                    isVisible={true}
+                  />
+                </div>
+              </>
+            )}
+
+            {/* 家长专属功能 */}
+            {user?.role === UserRole.PARENT && (
+              <ParentDashboard applications={applications} />
+            )}
           </div>
         </div>
 
@@ -323,6 +341,9 @@ function MainApplication() {
           </div>
         )}
       </div>
+
+      {/* Toast 通知容器 */}
+      <ToastContainer toasts={toast.toasts} onRemove={toast.removeToast} />
     </div>
   );
 }
