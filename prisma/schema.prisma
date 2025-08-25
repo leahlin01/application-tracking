@@ -1,0 +1,161 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+// 学生表
+model Student {
+  id                String   @id @default(cuid())
+  name              String
+  email             String   @unique
+  graduationYear    Int
+  gpa               Decimal? @db.Decimal(3, 2)
+  satScore          Int?
+  actScore          Int?
+  targetCountries   String[]
+  intendedMajors    String[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // 关系
+  applications      Application[]
+  user              User?
+
+  @@map("students")
+}
+
+// 用户表（用于认证）
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      UserRole @default(STUDENT)
+  studentId String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 关系
+  student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("users")
+}
+
+// 大学表
+model University {
+  id                String   @id @default(cuid())
+  name              String
+  country           String
+  state             String?
+  city              String
+  usNewsRanking     Int?
+  acceptanceRate    Decimal? @db.Decimal(4, 2)
+  applicationSystem String   // 'Common App', 'Coalition', 'Direct'
+  tuitionInState    Decimal? @db.Decimal(10, 2)
+  tuitionOutState   Decimal? @db.Decimal(10, 2)
+  applicationFee    Decimal? @db.Decimal(6, 2)
+  deadlines         Json?    // {early_decision: 'date', regular: 'date'}
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // 关系
+  applications Application[]
+
+  @@map("universities")
+}
+
+// 申请表
+model Application {
+  id             String           @id @default(cuid())
+  studentId      String
+  universityId   String
+  applicationType ApplicationType
+  deadline       DateTime
+  status         ApplicationStatus @default(NOT_STARTED)
+  submittedDate  DateTime?
+  decisionDate   DateTime?
+  decisionType   DecisionType?
+  notes          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  // 关系
+  student        Student                  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  university     University               @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  requirements   ApplicationRequirement[]
+
+  @@map("applications")
+}
+
+// 申请要求表
+model ApplicationRequirement {
+  id               String                    @id @default(cuid())
+  applicationId    String
+  requirementType  RequirementType
+  status           RequirementStatus         @default(NOT_STARTED)
+  deadline         DateTime?
+  notes            String?
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+
+  // 关系
+  application      Application               @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("application_requirements")
+}
+
+// 枚举类型
+enum UserRole {
+  STUDENT
+  PARENT
+  TEACHER
+  ADMIN
+}
+
+enum ApplicationType {
+  EARLY_DECISION
+  EARLY_ACTION
+  REGULAR_DECISION
+  ROLLING_ADMISSION
+}
+
+enum ApplicationStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  UNDER_REVIEW
+  DECIDED
+}
+
+enum DecisionType {
+  ACCEPTED
+  REJECTED
+  WAITLISTED
+  DEFERRED
+}
+
+enum RequirementType {
+  ESSAY
+  RECOMMENDATION
+  TRANSCRIPT
+  TEST_SCORES
+  PORTFOLIO
+  INTERVIEW
+  SUPPLEMENTAL_MATERIALS
+}
+
+enum RequirementStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  WAIVED
+}
