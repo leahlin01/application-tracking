@@ -4,11 +4,12 @@ import { prisma } from '@/lib/prisma';
 // 获取申请详情
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const application = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         university: true,
         requirements: true,
@@ -30,9 +31,10 @@ export async function GET(
 // 更新申请
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const {
       applicationType,
@@ -45,7 +47,7 @@ export async function PUT(
     } = body;
 
     const application = await prisma.application.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         applicationType,
         deadline: deadline ? new Date(deadline) : undefined,
@@ -71,11 +73,12 @@ export async function PUT(
 // 删除申请
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.application.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: '申请已删除' });

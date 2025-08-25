@@ -15,10 +15,10 @@ export const Navigation: React.FC = () => {
         return '学生';
       case UserRole.PARENT:
         return '家长';
-      case UserRole.TEACHER:
-        return '老师';
-      case UserRole.ADMIN:
-        return '管理员';
+      // case UserRole.TEACHER:
+      //   return '老师';
+      // case UserRole.ADMIN:
+      //   return '管理员';
       default:
         return role;
     }
