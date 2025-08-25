@@ -1,33 +1,47 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/components/AuthProvider';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { Navigation } from '@/components/Navigation';
 import {
   University,
   Application,
   ApplicationType,
   ApplicationStatus,
+  UserRole,
 } from '@/types';
 import UniversitySearch from '@/components/UniversitySearch';
 import ApplicationList from '@/components/ApplicationList';
 import ApplicationForm from '@/components/ApplicationForm';
 import Dashboard from '@/components/Dashboard';
+import { StudentBinding } from '@/components/StudentBinding';
 import {
   mockStudent,
   mockUniversities,
   mockApplications,
 } from '@/lib/mockData';
-import { prisma } from '@/lib/prisma';
 
-export default function Home() {
+// 主应用内容组件
+function MainApplication() {
   const [universities, setUniversities] = useState<University[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [selectedUniversity, setSelectedUniversity] =
     useState<University | null>(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
-  // 模拟学生ID（在实际应用中应该从认证系统获取）
-  const studentId = 'demo-student-id';
+  // 根据用户角色获取学生ID
+  const getStudentId = () => {
+    if (user?.role === UserRole.STUDENT) {
+      return user.studentId;
+    }
+    // 家长和老师可以查看所有申请，暂时返回null表示查看所有
+    return null;
+  };
+
+  const studentId = getStudentId();
 
   const initializeData = async () => {
     try {
@@ -37,10 +51,6 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        // const errorData = await response.json();
-        // throw new Error(
-        //   errorData.error || `HTTP error! status: ${response.status}`
-        // );
         return;
       }
 
@@ -69,13 +79,20 @@ export default function Home() {
 
   const fetchApplications = async () => {
     try {
-      const response = await fetch(`/api/applications?studentId=${studentId}`);
+      let url = '/api/applications';
+      if (user?.role === UserRole.STUDENT) {
+        url = `/api/student/applications`;
+      } else if (user?.role === UserRole.PARENT) {
+        url = `/api/parent/applications`;
+      }
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      });
 
       if (!response.ok) {
-        // const errorData = await response.json();
-        // throw new Error(
-        //   errorData.error || `HTTP error! status: ${response.status}`
-        // );
         return;
       }
 
@@ -83,8 +100,7 @@ export default function Home() {
       setApplications(data);
     } catch (error) {
       console.error('获取申请列表失败:', error);
-      // 可以在这里添加用户友好的错误提示
-      setApplications([]); // 设置空数组作为fallback
+      setApplications([]);
     } finally {
       setLoading(false);
     }
@@ -102,22 +118,24 @@ export default function Home() {
     notes?: string;
   }) => {
     try {
-      const response = await fetch('/api/applications', {
+      const url =
+        user?.role === UserRole.STUDENT
+          ? '/api/student/applications'
+          : '/api/applications';
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
         body: JSON.stringify({
           ...formData,
-          studentId,
+          studentId:
+            user?.role === UserRole.STUDENT ? user.studentId : undefined,
         }),
       });
 
       if (!response.ok) {
-        // const errorData = await response.json();
-        // throw new Error(
-        //   errorData.error || `HTTP error! status: ${response.status}`
-        // );
         return;
       }
 
@@ -127,7 +145,6 @@ export default function Home() {
       setSelectedUniversity(null);
     } catch (error) {
       console.error('创建申请失败:', error);
-      // 可以在这里添加用户友好的错误提示
     }
   };
 
@@ -140,15 +157,12 @@ export default function Home() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
         body: JSON.stringify(updates),
       });
 
       if (!response.ok) {
-        // const errorData = await response.json();
-        // throw new Error(
-        //   errorData.error || `HTTP error! status: ${response.status}`
-        // );
         return;
       }
 
@@ -162,7 +176,6 @@ export default function Home() {
       }
     } catch (error) {
       console.error('更新申请失败:', error);
-      // 可以在这里添加用户友好的错误提示
     }
   };
 
@@ -170,14 +183,12 @@ export default function Home() {
     try {
       const response = await fetch(`/api/applications/${applicationId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
       });
 
       if (!response.ok) {
-        // const errorData = await response.json();
-        // throw new Error(
-        //   errorData.error || `HTTP error! status: ${response.status}`
-        // );
-
         return;
       }
 
@@ -189,7 +200,6 @@ export default function Home() {
       }
     } catch (error) {
       console.error('删除申请失败:', error);
-      // 可以在这里添加用户友好的错误提示
     }
   };
 
@@ -206,6 +216,8 @@ export default function Home() {
 
   return (
     <div className='min-h-screen bg-gray-50'>
+      <Navigation />
+
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
         <div className='mb-8'>
           <div className='flex justify-between items-start'>
@@ -217,50 +229,55 @@ export default function Home() {
                 追踪你的大学申请进度，管理申请要求和截止日期
               </p>
             </div>
-            <button
-              onClick={() => {
-                if (
-                  confirm(
-                    '这将清空所有现有数据并重新初始化示例数据。确定要继续吗？'
-                  )
-                ) {
-                  initializeData();
-                }
-              }}
-              disabled={loading}
-              className='px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
-            >
-              {loading ? (
-                <>
-                  <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
-                  初始化中...
-                </>
-              ) : (
-                <>
-                  <svg
-                    className='w-4 h-4'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'
-                    />
-                  </svg>
-                  初始化示例数据
-                </>
-              )}
-            </button>
+            {/* 暂时注释掉管理员功能
+            {user?.role === UserRole.ADMIN && (
+              <button
+                onClick={() => {
+                  if (
+                    confirm(
+                      '这将清空所有现有数据并重新初始化示例数据。确定要继续吗？'
+                    )
+                  ) {
+                    initializeData();
+                  }
+                }}
+                disabled={loading}
+                className='px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
+              >
+                {loading ? (
+                  <>
+                    <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
+                    初始化中...
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className='w-4 h-4'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'
+                      />
+                    </svg>
+                    初始化示例数据
+                  </>
+                )}
+              </button>
+            )}
+            */}
           </div>
         </div>
 
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-          {/* 左侧：仪表板 */}
-          <div className='lg:col-span-1'>
+          {/* 左侧：仪表板和学生绑定 */}
+          <div className='lg:col-span-1 space-y-6'>
             <Dashboard applications={applications} />
+            {user?.role === UserRole.PARENT && <StudentBinding />}
           </div>
 
           {/* 右侧：主要内容 */}
@@ -276,7 +293,7 @@ export default function Home() {
             {/* 申请列表 */}
             <div className='bg-white rounded-lg shadow p-6'>
               <h2 className='text-xl font-semibold text-gray-900 mb-4'>
-                我的申请
+                {user?.role === UserRole.STUDENT ? '我的申请' : '申请列表'}
               </h2>
               <ApplicationList
                 applications={applications}
@@ -307,5 +324,14 @@ export default function Home() {
         )}
       </div>
     </div>
+  );
+}
+
+// 主页面组件，包含权限保护
+export default function Home() {
+  return (
+    <ProtectedRoute>
+      <MainApplication />
+    </ProtectedRoute>
   );
 }

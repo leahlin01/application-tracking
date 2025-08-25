@@ -1,7 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Application, ApplicationStatus, DecisionType } from '@/types';
+import {
+  Application,
+  ApplicationStatus,
+  DecisionType,
+  UserRole,
+} from '@/types';
 import { format } from 'date-fns';
 import {
   PencilIcon,
@@ -9,7 +14,10 @@ import {
   CheckCircleIcon,
   ClockIcon,
   ExclamationTriangleIcon,
+  ChatBubbleLeftIcon,
 } from '@heroicons/react/24/outline';
+import { useAuth } from './AuthProvider';
+import { ParentNoteForm } from './ParentNoteForm';
 
 interface ApplicationListProps {
   applications: Application[];
@@ -25,6 +33,8 @@ export default function ApplicationList({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<Partial<Application>>({});
   const [isClient, setIsClient] = useState(false);
+  const [showNoteForm, setShowNoteForm] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     setIsClient(true);
@@ -223,6 +233,59 @@ export default function ApplicationList({
               </div>
             )}
           </div>
+
+          {/* 家长备注显示 */}
+          {application.parentNotes && application.parentNotes.length > 0 && (
+            <div className='mt-3'>
+              <span className='text-sm text-gray-500'>家长备注:</span>
+              <div className='mt-2 space-y-2'>
+                {application.parentNotes.map((note) => (
+                  <div
+                    key={note.id}
+                    className='bg-blue-50 border border-blue-200 rounded-md p-3'
+                  >
+                    <div className='flex justify-between items-start'>
+                      <p className='text-sm text-gray-700'>{note.content}</p>
+                      <span className='text-xs text-gray-500'>
+                        {format(new Date(note.createdAt), 'yyyy-MM-dd HH:mm')}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 家长添加备注按钮 */}
+          {user?.role === UserRole.PARENT && (
+            <div className='mt-3'>
+              <button
+                onClick={() =>
+                  setShowNoteForm(
+                    showNoteForm === application.id ? null : application.id
+                  )
+                }
+                className='inline-flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-700 border border-blue-300 rounded-md hover:bg-blue-50'
+              >
+                <ChatBubbleLeftIcon className='w-4 h-4 mr-1' />
+                {showNoteForm === application.id ? '取消' : '添加备注'}
+              </button>
+            </div>
+          )}
+
+          {/* 家长备注表单 */}
+          {showNoteForm === application.id && (
+            <div className='mt-3'>
+              <ParentNoteForm
+                applicationId={application.id}
+                onNoteAdded={() => {
+                  setShowNoteForm(null);
+                  // 这里可以刷新数据
+                }}
+                onCancel={() => setShowNoteForm(null)}
+              />
+            </div>
+          )}
 
           {editingId === application.id ? (
             <div className='mt-4 space-y-3'>

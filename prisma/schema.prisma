@@ -30,6 +30,7 @@ model Student {
   // 关系
   applications      Application[]
   user              User?
+  parentStudents    ParentStudent[]
 
   @@map("students")
 }
@@ -45,7 +46,9 @@ model User {
   updatedAt DateTime @updatedAt
 
   // 关系
-  student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student         Student?         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  parentNotes     ParentNote[]
+  parentStudents  ParentStudent[]
 
   @@map("users")
 }
@@ -92,6 +95,7 @@ model Application {
   student        Student                  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   university     University               @relation(fields: [universityId], references: [id], onDelete: Cascade)
   requirements   ApplicationRequirement[]
+  parentNotes    ParentNote[]
 
   @@map("applications")
 }
@@ -111,6 +115,38 @@ model ApplicationRequirement {
   application      Application               @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
   @@map("application_requirements")
+}
+
+// 家长-学生关联表
+model ParentStudent {
+  id        String   @id @default(cuid())
+  parentId  String
+  studentId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 关系
+  parent  User    @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([parentId, studentId])
+  @@map("parent_students")
+}
+
+// 家长备注表
+model ParentNote {
+  id             String   @id @default(cuid())
+  applicationId  String
+  parentId       String
+  content        String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // 关系
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  parent         User        @relation(fields: [parentId], references: [id], onDelete: Cascade)
+
+  @@map("parent_notes")
 }
 
 // 枚举类型

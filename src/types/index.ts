@@ -4,8 +4,8 @@ export interface Student {
   email: string;
   graduationYear: number;
   gpa?: number;
-  satScore?: number;
-  actScore?: number;
+  satScore?: number | null;
+  actScore?: number | null;
   targetCountries: string[];
   intendedMajors: string[];
   createdAt: string;
@@ -47,6 +47,7 @@ export interface Application {
   student?: Student;
   university?: University;
   requirements?: ApplicationRequirement[];
+  parentNotes?: ParentNote[];
 }
 
 export interface ApplicationRequirement {
@@ -119,4 +120,81 @@ export interface UniversityFormData {
   tuitionOutState?: number;
   applicationFee?: number;
   deadlines?: Record<string, string>;
+}
+
+// 新增：用户认证和角色相关类型
+export interface User {
+  id: string;
+  email: string;
+  role: UserRole;
+  studentId?: string;
+  createdAt: string;
+  updatedAt: string;
+  student?: Student;
+}
+
+export enum UserRole {
+  STUDENT = 'STUDENT',
+  PARENT = 'PARENT',
+  // TEACHER = 'TEACHER',
+  // ADMIN = 'ADMIN',
+}
+
+export interface AuthRequest {
+  user: User;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  role: UserRole;
+  studentId?: string;
+  studentIds?: string[];
+}
+
+export interface JwtPayload {
+  userId: string;
+  email: string;
+  role: UserRole;
+  studentId?: string;
+}
+
+// 权限相关类型
+export interface Permission {
+  resource: string;
+  action: string;
+  conditions?: Record<string, unknown>;
+}
+
+export interface RolePermissions {
+  role: UserRole;
+  permissions: Permission[];
+}
+
+// 家长-学生关联类型
+export interface ParentStudent {
+  id: string;
+  parentId: string;
+  studentId: string;
+  createdAt: string;
+  updatedAt: string;
+  parent?: User;
+  student?: Student;
+}
+
+// 家长备注类型
+export interface ParentNote {
+  id: string;
+  applicationId: string;
+  parentId: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  application?: Application;
+  parent?: User;
 }
