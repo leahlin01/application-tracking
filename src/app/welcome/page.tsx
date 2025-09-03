@@ -1,6 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 
+// 强制静态生成
+export const dynamic = 'force-static';
+
 export default function WelcomePage() {
   return (
     <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'>
@@ -60,48 +63,48 @@ export default function WelcomePage() {
             </div>
 
             {/* 暂时注释掉老师和管理员角色
-            <div className='bg-white rounded-lg shadow-md p-6'>
-              <div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4'>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className='w-6 h-6 text-purple-600'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
+                  className="w-6 h-6 text-purple-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
                   <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     strokeWidth={2}
-                    d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                   />
                 </svg>
               </div>
-              <h3 className='text-lg font-semibold text-gray-900 mb-2'>老师</h3>
-              <p className='text-gray-600 text-sm'>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">老师</h3>
+              <p className="text-gray-600 text-sm">
                 指导学生申请，查看进度，提供建议
               </p>
             </div>
 
-            <div className='bg-white rounded-lg shadow-md p-6'>
-              <div className='w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4'>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className='w-6 h-6 text-red-600'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
+                  className="w-6 h-6 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
                   <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     strokeWidth={2}
-                    d='M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                   />
                 </svg>
               </div>
-              <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 管理员
               </h3>
-              <p className='text-gray-600 text-sm'>
+              <p className="text-gray-600 text-sm">
                 系统管理，用户管理，数据维护
               </p>
             </div>
