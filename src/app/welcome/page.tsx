@@ -1,20 +1,7 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useAuth } from '../../components/AuthProvider';
 
 export default function WelcomePage() {
-  const { user } = useAuth();
-
-  // 如果用户已登录，重定向到主页
-  if (user) {
-    if (typeof window !== 'undefined') {
-      window.location.href = '/';
-    }
-    return null;
-  }
-
   return (
     <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
@@ -135,17 +122,12 @@ export default function WelcomePage() {
               >
                 立即登录
               </Link>
-              <button
-                onClick={() => {
-                  // 滚动到功能介绍
-                  document
-                    .getElementById('features')
-                    ?.scrollIntoView({ behavior: 'smooth' });
-                }}
+              <a
+                href='#features'
                 className='inline-flex items-center justify-center px-8 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors'
               >
                 了解更多
-              </button>
+              </a>
             </div>
           </div>
         </div>
