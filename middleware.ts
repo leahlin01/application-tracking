@@ -1,26 +1,53 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import createIntlMiddleware from 'next-intl/middleware';
 import { verifyToken } from './src/lib/auth';
+
+const intlMiddleware = createIntlMiddleware({
+  locales: ['zh', 'en', 'ja'],
+  defaultLocale: 'zh',
+});
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 跳过静态资源、API认证路由和公开页面
-  const publicPaths = ['/welcome', '/auth', '/role-selection'];
-  const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
-
+  // 跳过静态资源和API认证路由
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api/auth') ||
     pathname.includes('.') ||
-    pathname === '/favicon.ico' ||
-    isPublicPath
+    pathname === '/favicon.ico'
   ) {
     return NextResponse.next();
   }
 
+  // 首先处理国际化路由
+  const intlResponse = intlMiddleware(request);
+
+  // 获取处理后的路径名（包含locale）
+  const url = new URL(request.url);
+  const locale = pathname.split('/')[1];
+  const isValidLocale = ['zh', 'en', 'ja'].includes(locale);
+
+  // 定义公开路径（需要包含locale前缀）
+  const publicPaths = ['/welcome', '/auth', '/role-selection'];
+  const isPublicPath = publicPaths.some((path) => {
+    if (isValidLocale) {
+      return pathname.startsWith(`/${locale}${path}`);
+    }
+    return pathname.startsWith(path);
+  });
+
+  // 如果是公开路径，直接返回国际化处理结果
+  if (isPublicPath) {
+    return intlResponse;
+  }
+
   // 主页面保护 - 需要认证才能访问
-  if (pathname === '/') {
+  const isHomePage =
+    pathname === '/' || (isValidLocale && pathname === `/${locale}`);
+
+  if (isHomePage) {
     // 从Authorization header或cookie中获取token
     let token = request.headers.get('authorization')?.replace('Bearer ', '');
 
@@ -39,7 +66,9 @@ export async function middleware(request: NextRequest) {
         `Unauthorized home page access attempt: ${pathname} from ${clientIP}`
       );
 
-      return NextResponse.redirect(new URL('/welcome', request.url));
+      // 重定向到对应locale的welcome页面
+      const welcomeUrl = isValidLocale ? `/${locale}/welcome` : '/zh/welcome';
+      return NextResponse.redirect(new URL(welcomeUrl, request.url));
     }
 
     // 验证token
@@ -47,8 +76,9 @@ export async function middleware(request: NextRequest) {
     if (!payload) {
       console.log(`Invalid token home page access: ${pathname}`);
 
-      const response = NextResponse.redirect(new URL('/welcome', request.url));
-      // 清除无效的认证cookie
+      // 重定向到对应locale的welcome页面并清除无效cookie
+      const welcomeUrl = isValidLocale ? `/${locale}/welcome` : '/zh/welcome';
+      const response = NextResponse.redirect(new URL(welcomeUrl, request.url));
       response.cookies.delete('auth-token');
       return response;
     }
@@ -66,7 +96,8 @@ export async function middleware(request: NextRequest) {
     });
   }
 
-  return NextResponse.next();
+  // 对于其他路径，返回国际化处理结果
+  return intlResponse;
 }
 
 export const config = {

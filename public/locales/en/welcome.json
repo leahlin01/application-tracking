@@ -1,0 +1,46 @@
+{
+  "title": "Welcome to University Application Management Platform",
+  "subtitle": "This is a professional university application tracking system that helps students, parents, and teachers better manage the university application process. Through role-based access control, it ensures that each user can securely access the appropriate functions.",
+  "roles": {
+    "student": {
+      "title": "Student",
+      "description": "Manage your university applications, track progress, set reminders"
+    },
+    "parent": {
+      "title": "Parent",
+      "description": "View your child's application progress, add notes and suggestions"
+    }
+  },
+  "buttons": {
+    "register": "Start Registration",
+    "login": "Login Now",
+    "learnMore": "Learn More"
+  },
+  "features": {
+    "title": "System Features",
+    "rbac": {
+      "title": "Role-Based Access Control",
+      "description": "Different roles have different permissions, ensuring data security and privacy protection. Students can only access their own applications, parents can view but not modify, teachers can guide but not delete."
+    },
+    "tracking": {
+      "title": "Real-time Progress Tracking",
+      "description": "Track application status in real-time, set deadline reminders, ensure you don't miss important application milestones."
+    },
+    "collaboration": {
+      "title": "Collaboration Features",
+      "description": "Parents can add notes to applications, teachers can provide guidance, students can share application progress, enabling multi-party collaboration."
+    },
+    "security": {
+      "title": "Data Security",
+      "description": "Uses JWT authentication, encrypted password storage, input validation, prevents SQL injection and XSS attacks, ensuring system security and reliability."
+    },
+    "responsive": {
+      "title": "Responsive Design",
+      "description": "Supports access from various devices, from mobile phones to desktop computers, providing a good user experience."
+    },
+    "scalable": {
+      "title": "Scalable Architecture",
+      "description": "Modular design supports future feature expansion, easily adding new roles and permissions."
+    }
+  }
+}

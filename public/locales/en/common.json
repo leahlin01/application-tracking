@@ -1,0 +1,68 @@
+{
+  "navigation": {
+    "home": "Home",
+    "applications": "Applications",
+    "universities": "Universities",
+    "comparison": "Comparison",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "role": "Role",
+    "student": "Student",
+    "parent": "Parent",
+    "admin": "Admin",
+    "loginSuccess": "Login successful",
+    "registerSuccess": "Registration successful",
+    "loginError": "Login failed",
+    "registerError": "Registration failed"
+  },
+  "application": {
+    "title": "Application Management",
+    "addApplication": "Add Application",
+    "university": "University",
+    "major": "Major",
+    "status": "Status",
+    "applied": "Applied",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "deadline": "Deadline",
+    "notes": "Notes",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "noApplications": "No applications found"
+  },
+  "university": {
+    "search": "Search Universities",
+    "searchPlaceholder": "Enter university name...",
+    "country": "Country",
+    "ranking": "Ranking",
+    "tuition": "Tuition",
+    "acceptanceRate": "Acceptance Rate",
+    "compare": "Compare",
+    "addToCompare": "Add to Compare",
+    "removeFromCompare": "Remove from Compare"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error occurred",
+    "success": "Success",
+    "save": "Save",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  }
+}

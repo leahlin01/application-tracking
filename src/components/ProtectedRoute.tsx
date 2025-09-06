@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAuth } from './AuthProvider';
 import { UserRole } from '../types';
+import { usePathname } from 'next/navigation';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,9 +14,20 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   allowedRoles,
-  redirectTo = '/welcome',
+  redirectTo,
 }) => {
   const { user, loading } = useAuth();
+  const pathname = usePathname();
+
+  // 从当前路径提取locale，如果没有则使用默认值
+  const getLocaleFromPath = () => {
+    const segments = pathname.split('/');
+    const possibleLocale = segments[1];
+    return ['zh', 'en', 'ja'].includes(possibleLocale) ? possibleLocale : 'zh';
+  };
+
+  const currentLocale = getLocaleFromPath();
+  const defaultRedirectTo = redirectTo || `/${currentLocale}/welcome`;
 
   // 如果正在加载，显示加载状态
   if (loading) {
@@ -32,7 +44,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // 如果用户未登录，重定向到登录页面
   if (!user) {
     if (typeof window !== 'undefined') {
-      window.location.href = redirectTo;
+      window.location.href = defaultRedirectTo;
     }
     return null;
   }

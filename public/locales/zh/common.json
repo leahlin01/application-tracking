@@ -1,0 +1,68 @@
+{
+  "navigation": {
+    "home": "首页",
+    "applications": "申请管理",
+    "universities": "大学搜索",
+    "comparison": "大学对比",
+    "profile": "个人资料",
+    "logout": "退出登录"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "name": "姓名",
+    "role": "角色",
+    "student": "学生",
+    "parent": "家长",
+    "admin": "管理员",
+    "loginSuccess": "登录成功",
+    "registerSuccess": "注册成功",
+    "loginError": "登录失败",
+    "registerError": "注册失败"
+  },
+  "application": {
+    "title": "申请管理",
+    "addApplication": "添加申请",
+    "university": "大学",
+    "major": "专业",
+    "status": "状态",
+    "applied": "已申请",
+    "pending": "待审核",
+    "accepted": "已录取",
+    "rejected": "已拒绝",
+    "deadline": "截止日期",
+    "notes": "备注",
+    "submit": "提交",
+    "cancel": "取消",
+    "edit": "编辑",
+    "delete": "删除",
+    "noApplications": "暂无申请记录"
+  },
+  "university": {
+    "search": "搜索大学",
+    "searchPlaceholder": "输入大学名称...",
+    "country": "国家",
+    "ranking": "排名",
+    "tuition": "学费",
+    "acceptanceRate": "录取率",
+    "compare": "对比",
+    "addToCompare": "添加到对比",
+    "removeFromCompare": "从对比中移除"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了",
+    "success": "成功",
+    "save": "保存",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "close": "关闭",
+    "confirm": "确认",
+    "yes": "是",
+    "no": "否"
+  }
+}
