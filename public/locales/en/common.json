@@ -7,22 +7,6 @@
     "profile": "Profile",
     "logout": "Logout"
   },
-  "auth": {
-    "login": "Login",
-    "register": "Register",
-    "email": "Email",
-    "password": "Password",
-    "confirmPassword": "Confirm Password",
-    "name": "Name",
-    "role": "Role",
-    "student": "Student",
-    "parent": "Parent",
-    "admin": "Admin",
-    "loginSuccess": "Login successful",
-    "registerSuccess": "Registration successful",
-    "loginError": "Login failed",
-    "registerError": "Registration failed"
-  },
   "application": {
     "title": "Application Management",
     "addApplication": "Add Application",
@@ -39,7 +23,17 @@
     "cancel": "Cancel",
     "edit": "Edit",
     "delete": "Delete",
-    "noApplications": "No applications found"
+    "noApplications": "No applications found",
+    "myApplications": "My Applications",
+    "applicationList": "Application List",
+    "addApplicationFor": "Add Application - {universityName}",
+    "createApplicationSuccess": "Application created successfully",
+    "createApplicationFailed": "Failed to create application",
+    "updateApplicationSuccess": "Application updated successfully",
+    "updateApplicationFailed": "Failed to update application, please try again",
+    "deleteApplicationSuccess": "Application deleted successfully",
+    "deleteApplicationFailed": "Failed to delete application, please try again",
+    "parentCannotAddApplication": "Parents cannot add applications"
   },
   "university": {
     "search": "Search Universities",
@@ -50,7 +44,16 @@
     "acceptanceRate": "Acceptance Rate",
     "compare": "Compare",
     "addToCompare": "Add to Compare",
-    "removeFromCompare": "Remove from Compare"
+    "removeFromCompare": "Remove from Compare",
+    "universityComparison": "University Comparison"
+  },
+  "dashboard": {
+    "title": "University Application Management Platform",
+    "subtitle": "Track your university application progress, manage application requirements and deadlines",
+    "totalApplications": "Total Applications",
+    "pendingApplications": "Pending Applications",
+    "acceptedApplications": "Accepted Applications",
+    "rejectedApplications": "Rejected Applications"
   },
   "common": {
     "loading": "Loading...",

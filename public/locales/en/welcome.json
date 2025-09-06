@@ -1,46 +1,84 @@
 {
-  "title": "Welcome to University Application Management Platform",
-  "subtitle": "This is a professional university application tracking system that helps students, parents, and teachers better manage the university application process. Through role-based access control, it ensures that each user can securely access the appropriate functions.",
-  "roles": {
-    "student": {
-      "title": "Student",
-      "description": "Manage your university applications, track progress, set reminders"
-    },
-    "parent": {
-      "title": "Parent",
-      "description": "View your child's application progress, add notes and suggestions"
-    }
-  },
-  "buttons": {
-    "register": "Start Registration",
-    "login": "Login Now",
-    "learnMore": "Learn More"
+  "hero": {
+    "title": "Your College Application Journey Starts Here",
+    "subtitle": "Streamline your university applications with our comprehensive tracking platform",
+    "description": "Track deadlines, manage documents, and stay organized throughout your college application process.",
+    "cta": "Get Started Today"
   },
   "features": {
-    "title": "System Features",
-    "rbac": {
-      "title": "Role-Based Access Control",
-      "description": "Different roles have different permissions, ensuring data security and privacy protection. Students can only access their own applications, parents can view but not modify, teachers can guide but not delete."
-    },
-    "tracking": {
-      "title": "Real-time Progress Tracking",
-      "description": "Track application status in real-time, set deadline reminders, ensure you don't miss important application milestones."
-    },
-    "collaboration": {
-      "title": "Collaboration Features",
-      "description": "Parents can add notes to applications, teachers can provide guidance, students can share application progress, enabling multi-party collaboration."
-    },
-    "security": {
-      "title": "Data Security",
-      "description": "Uses JWT authentication, encrypted password storage, input validation, prevents SQL injection and XSS attacks, ensuring system security and reliability."
-    },
-    "responsive": {
-      "title": "Responsive Design",
-      "description": "Supports access from various devices, from mobile phones to desktop computers, providing a good user experience."
-    },
-    "scalable": {
-      "title": "Scalable Architecture",
-      "description": "Modular design supports future feature expansion, easily adding new roles and permissions."
-    }
+    "title": "What We Offer",
+    "subtitle": "Everything you need to manage your college applications",
+    "items": [
+      {
+        "title": "Application Tracking",
+        "description": "Keep track of all your applications, deadlines, and requirements in one place.",
+        "icon": "📋"
+      },
+      {
+        "title": "Document Management",
+        "description": "Upload, organize, and manage all your application documents securely.",
+        "icon": "📄"
+      },
+      {
+        "title": "Deadline Reminders",
+        "description": "Never miss an important deadline with our smart notification system.",
+        "icon": "⏰"
+      },
+      {
+        "title": "Progress Monitoring",
+        "description": "Visualize your application progress and stay on top of your goals.",
+        "icon": "📊"
+      }
+    ]
+  },
+  "whyChoose": {
+    "title": "Why Choose Our Platform?",
+    "items": [
+      {
+        "title": "User-Friendly Interface",
+        "description": "Intuitive design that makes managing applications effortless."
+      },
+      {
+        "title": "Secure & Reliable",
+        "description": "Your data is protected with enterprise-grade security measures."
+      },
+      {
+        "title": "24/7 Support",
+        "description": "Get help whenever you need it with our dedicated support team."
+      },
+      {
+        "title": "Free to Use",
+        "description": "Access all essential features at no cost to support your education journey."
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "What Students Say",
+    "items": [
+      {
+        "name": "Sarah Chen",
+        "role": "High School Senior",
+        "content": "This platform made my college application process so much easier! I could track everything in one place and never missed a deadline.",
+        "rating": 5
+      },
+      {
+        "name": "Michael Rodriguez",
+        "role": "Transfer Student",
+        "content": "The document management feature saved me hours of searching through files. Highly recommend!",
+        "rating": 5
+      },
+      {
+        "name": "Emily Johnson",
+        "role": "International Student",
+        "content": "As an international student, staying organized was crucial. This platform was a lifesaver!",
+        "rating": 5
+      }
+    ]
+  },
+  "contact": {
+    "title": "Ready to Get Started?",
+    "description": "Join thousands of students who have successfully managed their college applications with our platform.",
+    "email": "support@apptracker.edu",
+    "cta": "Contact Us"
   }
 }
