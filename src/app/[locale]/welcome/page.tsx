@@ -7,7 +7,7 @@ interface WelcomePageProps {
 }
 
 // Define supported locales
-const locales = ['en', 'zh', 'ja'];
+const locales = ['en', 'zh'];
 
 export default async function WelcomePage({ params }: WelcomePageProps) {
   const { locale } = await params;
@@ -24,12 +24,10 @@ export default async function WelcomePage({ params }: WelcomePageProps) {
           <h1 className='text-3xl font-bold text-gray-900'>
             {locale === 'zh' && '欢迎'}
             {locale === 'en' && 'Welcome'}
-            {locale === 'ja' && 'ようこそ'}
           </h1>
           <p className='mt-4 text-gray-600'>
             {locale === 'zh' && '欢迎来到应用程序跟踪系统'}
             {locale === 'en' && 'Welcome to the Application Tracking System'}
-            {locale === 'ja' && 'アプリケーション追跡システムへようこそ'}
           </p>
         </div>
       </div>

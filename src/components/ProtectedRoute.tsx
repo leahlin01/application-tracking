@@ -23,7 +23,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const getLocaleFromPath = () => {
     const segments = pathname.split('/');
     const possibleLocale = segments[1];
-    return ['zh', 'en', 'ja'].includes(possibleLocale) ? possibleLocale : 'zh';
+    return ['zh', 'en'].includes(possibleLocale) ? possibleLocale : 'zh';
   };
 
   const currentLocale = getLocaleFromPath();

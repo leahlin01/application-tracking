@@ -4,8 +4,8 @@ import createIntlMiddleware from 'next-intl/middleware';
 import { verifyToken } from './src/lib/auth';
 
 const intlMiddleware = createIntlMiddleware({
-  locales: ['zh', 'en', 'ja'],
-  defaultLocale: 'zh',
+  locales: ['zh', 'en'],
+  defaultLocale: 'en',
 });
 
 export async function middleware(request: NextRequest) {
@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
   // 获取处理后的路径名（包含locale）
   const url = new URL(request.url);
   const locale = pathname.split('/')[1];
-  const isValidLocale = ['zh', 'en', 'ja'].includes(locale);
+  const isValidLocale = ['zh', 'en'].includes(locale);
 
   // 定义公开路径（需要包含locale前缀）
   const publicPaths = ['/welcome', '/auth', '/role-selection'];
