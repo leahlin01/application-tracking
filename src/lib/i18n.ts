@@ -37,7 +37,6 @@ export default getRequestConfig(async ({ locale = 'en' }) => {
       messages: {
         ...loadMessages('common'),
         ...loadMessages('welcome'),
-        ...loadMessages('auth'),
         ...loadMessages('navigation'),
       },
     };

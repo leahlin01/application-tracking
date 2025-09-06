@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { User, UserRole } from '../types';
 
 interface AuthContextType {
@@ -33,6 +34,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     // 检查本地存储的token
@@ -62,15 +64,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // 登录成功后重定向到主页
+  // 从路径中提取语言信息
+  const getLocaleFromPath = (path: string): string => {
+    const segments = path.split('/').filter(Boolean);
+    const supportedLocales = ['en', 'zh'];
+
+    if (segments.length > 0 && supportedLocales.includes(segments[0])) {
+      return segments[0];
+    }
+
+    // 默认返回英文
+    return 'en';
+  };
+
+  // 登录成功后重定向到当前语言的主页
   const handleLoginSuccess = (userData: User, token: string) => {
     setUser(userData);
     localStorage.setItem('authToken', token);
     localStorage.setItem('userData', JSON.stringify(userData));
 
-    // 重定向到主页
+    // 重定向到当前语言的主页
     if (typeof window !== 'undefined') {
-      window.location.href = '/';
+      const currentLocale = getLocaleFromPath(pathname);
+      const currentPath = pathname;
+
+      if (currentPath.includes('/auth')) {
+        // 如果在 auth 页面，跳转到当前语言的主页
+        window.location.href = `/${currentLocale}`;
+      } else {
+        // 如果在其他页面，保持当前路径
+        window.location.href = currentPath;
+      }
     }
   };
 

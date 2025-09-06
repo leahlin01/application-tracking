@@ -4,6 +4,7 @@ import React from 'react';
 import { useAuth } from './AuthProvider';
 import { UserRole } from '../types';
 import { useTranslations } from 'next-intl';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export const Navigation: React.FC = () => {
   const { user, logout } = useAuth();
@@ -32,6 +33,7 @@ export const Navigation: React.FC = () => {
             </h1>
           </div>
           <div className='flex items-center space-x-4'>
+            <LanguageSwitcher />
             <span className='text-sm text-gray-600'>
               {t('welcome', {
                 email: user.email,

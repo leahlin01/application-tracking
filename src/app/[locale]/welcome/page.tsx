@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from '@/lib/i18n';
 import Link from 'next/link';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 interface WelcomePageProps {
   params: Promise<{
@@ -34,6 +35,9 @@ export default async function WelcomePage({ params }: WelcomePageProps) {
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50'>
+      <div className='absolute top-4 right-4 z-10'>
+        <LanguageSwitcher />
+      </div>
       {/* Hero Section */}
       <section className='relative overflow-hidden'>
         <div className='absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10'></div>
