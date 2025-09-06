@@ -1,9 +1,4 @@
-import {
-  Application,
-  University,
-  UserRole,
-  ApplicationType,
-} from '@prisma/client';
+import { Application, University, UserRole, ApplicationType } from '@/types';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import ApplicationForm from './ApplicationForm';
@@ -225,7 +220,7 @@ export default function MainApplication() {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* 左侧：仪表板和学生绑定 */}
           <div className='lg:col-span-1 space-y-6'>
-            <Dashboard applications={applications} user={user} />
+            <Dashboard applications={applications} />
             {user?.role === UserRole.PARENT && <StudentBinding />}
           </div>
 

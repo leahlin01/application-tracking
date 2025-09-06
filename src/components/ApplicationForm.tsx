@@ -22,7 +22,11 @@ export default function ApplicationForm({
   onCancel,
 }: ApplicationFormProps) {
   const t = useTranslations();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    applicationType: ApplicationType;
+    deadline: string;
+    notes?: string;
+  }>({
     applicationType: ApplicationType.REGULAR_DECISION,
     deadline: '',
     notes: '',

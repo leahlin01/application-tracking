@@ -1,3 +1,12 @@
+import {
+  ApplicationType,
+  ApplicationStatus,
+  DecisionType,
+  RequirementType,
+  RequirementStatus,
+  UserRole,
+} from '@prisma/client';
+
 export interface Student {
   id: string;
   name: string;
@@ -62,44 +71,15 @@ export interface ApplicationRequirement {
   application?: Application;
 }
 
-export enum ApplicationType {
-  EARLY_DECISION = 'EARLY_DECISION',
-  EARLY_ACTION = 'EARLY_ACTION',
-  REGULAR_DECISION = 'REGULAR_DECISION',
-  ROLLING_ADMISSION = 'ROLLING_ADMISSION',
-}
-
-export enum ApplicationStatus {
-  NOT_STARTED = 'NOT_STARTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  SUBMITTED = 'SUBMITTED',
-  UNDER_REVIEW = 'UNDER_REVIEW',
-  DECIDED = 'DECIDED',
-}
-
-export enum DecisionType {
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED',
-  WAITLISTED = 'WAITLISTED',
-  DEFERRED = 'DEFERRED',
-}
-
-export enum RequirementType {
-  ESSAY = 'ESSAY',
-  RECOMMENDATION = 'RECOMMENDATION',
-  TRANSCRIPT = 'TRANSCRIPT',
-  TEST_SCORES = 'TEST_SCORES',
-  PORTFOLIO = 'PORTFOLIO',
-  INTERVIEW = 'INTERVIEW',
-  SUPPLEMENTAL_MATERIALS = 'SUPPLEMENTAL_MATERIALS',
-}
-
-export enum RequirementStatus {
-  NOT_STARTED = 'NOT_STARTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  WAIVED = 'WAIVED',
-}
+// 使用 Prisma 生成的枚举类型
+export {
+  ApplicationType,
+  ApplicationStatus,
+  DecisionType,
+  RequirementType,
+  RequirementStatus,
+  UserRole,
+} from '@prisma/client';
 
 export interface ApplicationFormData {
   universityId: string;
@@ -131,13 +111,6 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   student?: Student;
-}
-
-export enum UserRole {
-  STUDENT = 'STUDENT',
-  PARENT = 'PARENT',
-  // TEACHER = 'TEACHER',
-  // ADMIN = 'ADMIN',
 }
 
 export interface AuthRequest {

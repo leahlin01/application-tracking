@@ -92,13 +92,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
       conditions: { parentId: 'self' },
     },
   ],
-  // [UserRole.TEACHER]: [
-  //   { resource: 'applications', action: 'read' },
-  //   { resource: 'applications', action: 'update' },
-  //   { resource: 'students', action: 'read' },
-  //   { resource: 'students', action: 'update' },
-  // ],
-  // [UserRole.ADMIN]: [{ resource: '*', action: '*' }],
 };
 
 // 权限检查函数

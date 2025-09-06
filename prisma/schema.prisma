@@ -153,8 +153,6 @@ model ParentNote {
 enum UserRole {
   STUDENT
   PARENT
-  TEACHER
-  ADMIN
 }
 
 enum ApplicationType {

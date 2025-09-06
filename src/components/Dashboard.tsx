@@ -1,30 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  Application,
-  ApplicationStatus,
-  DecisionType,
-  UserRole,
-  User,
-} from '@/types';
+import { Application, ApplicationStatus, DecisionType } from '@/types';
 import { format } from 'date-fns';
 import {
   AcademicCapIcon,
   ClockIcon,
   CheckCircleIcon,
   ExclamationTriangleIcon,
-  ChartBarIcon,
-  EyeIcon,
 } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 
 interface DashboardProps {
   applications: Application[];
-  user: User | null;
 }
 
-export default function Dashboard({ applications = [], user }: DashboardProps) {
+export default function Dashboard({ applications = [] }: DashboardProps) {
   const t = useTranslations();
   const [isClient, setIsClient] = useState(false);
 
