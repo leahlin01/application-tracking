@@ -6,6 +6,7 @@ import {
   MagnifyingGlassIcon,
   CheckCircleIcon,
 } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 
 interface UniversitySearchProps {
   onUniversitySelect: (university: University) => void;
@@ -16,6 +17,7 @@ export default function UniversitySearch({
   onUniversitySelect,
   applications = [],
 }: UniversitySearchProps) {
+  const t = useTranslations();
   const [universities, setUniversities] = useState<University[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [country, setCountry] = useState('');
@@ -71,7 +73,7 @@ export default function UniversitySearch({
             <MagnifyingGlassIcon className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
             <input
               type='text'
-              placeholder='搜索大学名称、城市或州...'
+              placeholder={t('university.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className='w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -81,7 +83,7 @@ export default function UniversitySearch({
             type='submit'
             className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500'
           >
-            搜索
+            {t('university.searchButton')}
           </button>
         </div>
 
@@ -92,7 +94,7 @@ export default function UniversitySearch({
             onChange={(e) => setCountry(e.target.value)}
             className='px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500'
           >
-            <option value=''>所有国家</option>
+            <option value=''>{t('university.allCountries')}</option>
             <option value='United States'>美国</option>
             <option value='Canada'>加拿大</option>
             <option value='United Kingdom'>英国</option>
@@ -103,7 +105,7 @@ export default function UniversitySearch({
             onChange={(e) => setState(e.target.value)}
             className='px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500'
           >
-            <option value=''>所有州</option>
+            <option value=''>{t('university.allStates')}</option>
             <option value='California'>加利福尼亚</option>
             <option value='New York'>纽约</option>
             <option value='Texas'>德克萨斯</option>
@@ -115,7 +117,7 @@ export default function UniversitySearch({
             onChange={(e) => setSystem(e.target.value)}
             className='px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500'
           >
-            <option value=''>所有系统</option>
+            <option value=''>{t('university.allSystems')}</option>
             <option value='Common App'>Common App</option>
             <option value='Coalition'>Coalition</option>
             <option value='Direct'>直接申请</option>
@@ -128,7 +130,9 @@ export default function UniversitySearch({
               onChange={(e) => setSortByRanking(e.target.checked)}
               className='rounded border-gray-300 text-blue-600 focus:ring-blue-500'
             />
-            <span className='text-sm text-gray-700'>按排名排序</span>
+            <span className='text-sm text-gray-700'>
+              {t('university.sortByRanking')}
+            </span>
           </label>
         </div>
       </form>
@@ -137,8 +141,8 @@ export default function UniversitySearch({
       {applications.length > 0 && (
         <div className='bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3'>
           <p className='text-sm text-blue-700'>
-            💡 <strong>提示</strong>:
-            已申请的学校会以置灰状态显示，并标记为&ldquo;已申请&rdquo;。
+            �� <strong>{t('common.tip')}</strong>:
+            {t('university.alreadyAppliedHint')}
           </p>
         </div>
       )}
@@ -148,11 +152,13 @@ export default function UniversitySearch({
         {loading ? (
           <div className='text-center py-4'>
             <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto'></div>
-            <p className='mt-2 text-sm text-gray-600'>搜索中...</p>
+            <p className='mt-2 text-sm text-gray-600'>
+              {t('university.searching')}
+            </p>
           </div>
         ) : universities.length === 0 ? (
           <div className='text-center py-8 text-gray-500'>
-            没有找到匹配的大学
+            {t('university.noUniversitiesFound')}
           </div>
         ) : (
           universities.map((university) => {
@@ -195,15 +201,19 @@ export default function UniversitySearch({
                       }`}
                     >
                       {university.usNewsRanking && (
-                        <span>排名: #{university.usNewsRanking}</span>
+                        <span>
+                          {t('university.ranking')}: #{university.usNewsRanking}
+                        </span>
                       )}
                       {university.acceptanceRate && (
                         <span>
-                          录取率: {(university.acceptanceRate * 100).toFixed(1)}
-                          %
+                          {t('university.acceptanceRate')}:{' '}
+                          {(university.acceptanceRate * 100).toFixed(1)}%
                         </span>
                       )}
-                      <span>系统: {university.applicationSystem}</span>
+                      <span>
+                        {t('university.system')}: {university.applicationSystem}
+                      </span>
                     </div>
                   </div>
                   <div className='text-right'>
@@ -213,7 +223,8 @@ export default function UniversitySearch({
                           isApplied ? 'text-gray-400' : 'text-gray-600'
                         }`}
                       >
-                        申请费: ${university.applicationFee}
+                        {t('university.applicationFee')}: $
+                        {university.applicationFee}
                       </p>
                     )}
                   </div>
@@ -224,7 +235,7 @@ export default function UniversitySearch({
                   <div className='mt-3 pt-3 border-t border-gray-200'>
                     <div className='flex items-center justify-center'>
                       <span className='text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full'>
-                        已申请 ✓
+                        {t('university.alreadyApplied')} ✓
                       </span>
                     </div>
                   </div>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from './AuthProvider';
+import { useTranslations } from 'next-intl';
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -12,6 +13,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const t = useTranslations();
 
   const { login } = useAuth();
 
@@ -36,7 +38,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   return (
     <div className='max-w-md mx-auto bg-white rounded-lg shadow-md p-6'>
       <h2 className='text-2xl font-bold text-center text-gray-900 mb-6'>
-        Sign In
+        {t('auth.signIn')}
       </h2>
 
       {error && (
@@ -51,7 +53,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             htmlFor='email'
             className='block text-sm font-medium text-gray-700 mb-1'
           >
-            Email
+            {t('auth.email')}
           </label>
           <input
             type='email'
@@ -60,7 +62,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             onChange={(e) => setEmail(e.target.value)}
             required
             className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-            placeholder='Enter your email'
+            placeholder={t('auth.enterEmail')}
           />
         </div>
 
@@ -69,7 +71,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             htmlFor='password'
             className='block text-sm font-medium text-gray-700 mb-1'
           >
-            Password
+            {t('auth.password')}
           </label>
           <input
             type='password'
@@ -78,7 +80,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             onChange={(e) => setPassword(e.target.value)}
             required
             className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-            placeholder='Enter your password'
+            placeholder={t('auth.enterPassword')}
           />
         </div>
 
@@ -87,19 +89,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
           disabled={loading}
           className='w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
         >
-          {loading ? 'Signing in...' : 'Sign In'}
+          {loading ? t('auth.signingIn') : t('auth.signIn')}
         </button>
       </form>
 
       <div className='mt-6 text-center'>
         <p className='text-sm text-gray-600'>
-          Don&apos;t have an account?{' '}
+          {t('auth.dontHaveAccount')}{' '}
           <button
             type='button'
             onClick={onSwitchToRegister}
             className='text-blue-600 hover:text-blue-500 font-medium'
           >
-            Sign up
+            {t('auth.signUp')}
           </button>
         </p>
       </div>

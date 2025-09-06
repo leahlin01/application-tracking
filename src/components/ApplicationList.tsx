@@ -17,8 +17,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAuth } from './AuthProvider';
 import { ParentNoteForm } from './ParentNoteForm';
-import { getApplicationTypeText } from '@/lib/utils';
+import { getApplicationTypeKey } from '@/lib/utils';
 import { useToast, ToastContainer } from './Toast';
+import { useTranslations } from 'next-intl';
 
 interface ApplicationListProps {
   applications: Application[];
@@ -33,6 +34,7 @@ export default function ApplicationList({
   onDelete,
   onRefresh,
 }: ApplicationListProps) {
+  const t = useTranslations();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<Partial<Application>>({});
   const [isClient, setIsClient] = useState(false);
@@ -79,15 +81,15 @@ export default function ApplicationList({
   const getStatusText = (status: ApplicationStatus) => {
     switch (status) {
       case ApplicationStatus.NOT_STARTED:
-        return '未开始';
+        return t('application.statusOptions.notStarted');
       case ApplicationStatus.IN_PROGRESS:
-        return '进行中';
+        return t('application.statusOptions.inProgress');
       case ApplicationStatus.SUBMITTED:
-        return '已提交';
+        return t('application.statusOptions.submitted');
       case ApplicationStatus.UNDER_REVIEW:
-        return '审核中';
+        return t('application.statusOptions.underReview');
       case ApplicationStatus.DECIDED:
-        return '已决定';
+        return t('application.statusOptions.decided');
       default:
         return status;
     }
@@ -96,13 +98,13 @@ export default function ApplicationList({
   const getDecisionText = (decision: DecisionType) => {
     switch (decision) {
       case DecisionType.ACCEPTED:
-        return '录取';
+        return t('application.decisionOptions.accepted');
       case DecisionType.REJECTED:
-        return '拒绝';
+        return t('application.decisionOptions.rejected');
       case DecisionType.WAITLISTED:
-        return '候补';
+        return t('application.decisionOptions.waitlisted');
       case DecisionType.DEFERRED:
-        return '延期';
+        return t('application.decisionOptions.deferred');
       default:
         return decision;
     }
@@ -150,8 +152,12 @@ export default function ApplicationList({
         <div className='text-gray-400 mb-4'>
           <ClockIcon className='h-12 w-12 mx-auto' />
         </div>
-        <h3 className='text-lg font-medium text-gray-900 mb-2'>还没有申请</h3>
-        <p className='text-gray-600'>搜索并选择大学开始你的申请之旅</p>
+        <h3 className='text-lg font-medium text-gray-900 mb-2'>
+          {t('application.noApplicationsYet')}
+        </h3>
+        <p className='text-gray-600'>
+          {t('application.noApplicationsDescription')}
+        </p>
       </div>
     );
   }
@@ -202,13 +208,17 @@ export default function ApplicationList({
 
           <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-sm'>
             <div>
-              <span className='text-gray-500'>申请类型:</span>
+              <span className='text-gray-500'>
+                {t('application.applicationTypeLabel')}
+              </span>
               <p className='font-medium'>
-                {getApplicationTypeText(application.applicationType)}
+                {t(getApplicationTypeKey(application.applicationType))}
               </p>
             </div>
             <div>
-              <span className='text-gray-500'>截止日期:</span>
+              <span className='text-gray-500'>
+                {t('application.deadlineLabel')}
+              </span>
               <p
                 className={`font-medium ${
                   isDeadlineOverdue(application.deadline)
@@ -222,7 +232,9 @@ export default function ApplicationList({
               </p>
             </div>
             <div>
-              <span className='text-gray-500'>状态:</span>
+              <span className='text-gray-500'>
+                {t('application.statusLabel')}
+              </span>
               <span
                 className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
                   application.status
@@ -233,7 +245,9 @@ export default function ApplicationList({
             </div>
             {application.decisionType && (
               <div>
-                <span className='text-gray-500'>决定:</span>
+                <span className='text-gray-500'>
+                  {t('application.decisionLabel')}
+                </span>
                 <span
                   className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getDecisionColor(
                     application.decisionType
@@ -248,7 +262,9 @@ export default function ApplicationList({
           {/* 家长备注显示 */}
           {application.parentNotes && application.parentNotes.length > 0 && (
             <div className='mt-3'>
-              <span className='text-sm text-gray-500'>家长备注:</span>
+              <span className='text-sm text-gray-500'>
+                {t('application.parentNotesLabel')}
+              </span>
               <div className='mt-2 space-y-2'>
                 {application.parentNotes.map((note) => (
                   <div
@@ -279,7 +295,9 @@ export default function ApplicationList({
                 className='inline-flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-700 border border-blue-300 rounded-md hover:bg-blue-50'
               >
                 <ChatBubbleLeftIcon className='w-4 h-4 mr-1' />
-                {showNoteForm === application.id ? '取消' : '添加备注'}
+                {showNoteForm === application.id
+                  ? t('common.cancel')
+                  : t('application.addNote')}
               </button>
             </div>
           )}
@@ -305,7 +323,7 @@ export default function ApplicationList({
             <div className='mt-4 space-y-3'>
               <div>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>
-                  状态
+                  {t('application.status')}
                 </label>
                 <select
                   value={editingData.status || ''}
@@ -327,7 +345,7 @@ export default function ApplicationList({
               {editingData.status === ApplicationStatus.DECIDED && (
                 <div>
                   <label className='block text-sm font-medium text-gray-700 mb-1'>
-                    决定
+                    {t('application.decision')}
                   </label>
                   <select
                     value={editingData.decisionType || ''}
@@ -339,7 +357,7 @@ export default function ApplicationList({
                     }
                     className='w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500'
                   >
-                    <option value=''>选择决定</option>
+                    <option value=''>{t('application.selectDecision')}</option>
                     {Object.values(DecisionType).map((decision) => (
                       <option key={decision} value={decision}>
                         {getDecisionText(decision)}
@@ -350,7 +368,7 @@ export default function ApplicationList({
               )}
               <div>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>
-                  备注
+                  {t('application.notesLabel')}
                 </label>
                 <textarea
                   value={editingData.notes || ''}
@@ -366,20 +384,22 @@ export default function ApplicationList({
                   onClick={() => handleSave(application.id)}
                   className='px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm'
                 >
-                  保存
+                  {t('common.save')}
                 </button>
                 <button
                   onClick={handleCancel}
                   className='px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 text-sm'
                 >
-                  取消
+                  {t('common.cancel')}
                 </button>
               </div>
             </div>
           ) : (
             application.notes && (
               <div className='mt-3'>
-                <span className='text-sm text-gray-500'>备注:</span>
+                <span className='text-sm text-gray-500'>
+                  {t('application.notes')}:
+                </span>
                 <p className='text-sm text-gray-700 mt-1'>
                   {application.notes}
                 </p>

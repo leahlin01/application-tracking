@@ -1,7 +1,60 @@
 import { ApplicationType, ApplicationStatus, DecisionType } from '@/types';
 
 /**
- * 将申请类型枚举转换为中文显示
+ * 申请类型到翻译键的映射
+ */
+export const APPLICATION_TYPE_KEYS = {
+  [ApplicationType.EARLY_DECISION]: 'application.types.earlyDecision',
+  [ApplicationType.EARLY_ACTION]: 'application.types.earlyAction',
+  [ApplicationType.REGULAR_DECISION]: 'application.types.regularDecision',
+  [ApplicationType.ROLLING_ADMISSION]: 'application.types.rollingAdmission',
+} as const;
+
+/**
+ * 申请状态到翻译键的映射
+ */
+export const APPLICATION_STATUS_KEYS = {
+  [ApplicationStatus.NOT_STARTED]: 'application.statusOptions.notStarted',
+  [ApplicationStatus.IN_PROGRESS]: 'application.statusOptions.inProgress',
+  [ApplicationStatus.SUBMITTED]: 'application.statusOptions.submitted',
+  [ApplicationStatus.UNDER_REVIEW]: 'application.statusOptions.underReview',
+  [ApplicationStatus.DECIDED]: 'application.statusOptions.decided',
+} as const;
+
+/**
+ * 决定类型到翻译键的映射
+ */
+export const DECISION_TYPE_KEYS = {
+  [DecisionType.ACCEPTED]: 'application.decisionOptions.accepted',
+  [DecisionType.REJECTED]: 'application.decisionOptions.rejected',
+  [DecisionType.WAITLISTED]: 'application.decisionOptions.waitlisted',
+  [DecisionType.DEFERRED]: 'application.decisionOptions.deferred',
+} as const;
+
+/**
+ * 获取申请类型的翻译键
+ */
+export function getApplicationTypeKey(type: ApplicationType): string {
+  return APPLICATION_TYPE_KEYS[type] || 'common.unknown';
+}
+
+/**
+ * 获取申请状态的翻译键
+ */
+export function getApplicationStatusKey(status: ApplicationStatus): string {
+  return APPLICATION_STATUS_KEYS[status] || 'common.unknown';
+}
+
+/**
+ * 获取决定类型的翻译键
+ */
+export function getDecisionTypeKey(decision: DecisionType): string {
+  return DECISION_TYPE_KEYS[decision] || 'common.unknown';
+}
+
+/**
+ * 将申请类型枚举转换为中文显示（已废弃，请使用 getApplicationTypeKey + useTranslations）
+ * @deprecated 请使用 getApplicationTypeKey 配合 useTranslations hook
  */
 export function getApplicationTypeText(type: ApplicationType): string {
   switch (type) {
@@ -19,7 +72,8 @@ export function getApplicationTypeText(type: ApplicationType): string {
 }
 
 /**
- * 将申请状态枚举转换为中文显示
+ * 将申请状态枚举转换为中文显示（已废弃，请使用 getApplicationStatusKey + useTranslations）
+ * @deprecated 请使用 getApplicationStatusKey 配合 useTranslations hook
  */
 export function getApplicationStatusText(status: ApplicationStatus): string {
   switch (status) {
@@ -39,7 +93,8 @@ export function getApplicationStatusText(status: ApplicationStatus): string {
 }
 
 /**
- * 将决定类型枚举转换为中文显示
+ * 将决定类型枚举转换为中文显示（已废弃，请使用 getDecisionTypeKey + useTranslations）
+ * @deprecated 请使用 getDecisionTypeKey 配合 useTranslations hook
  */
 export function getDecisionTypeText(decision: DecisionType): string {
   switch (decision) {

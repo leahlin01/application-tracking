@@ -17,6 +17,7 @@ import {
   ChartBarIcon,
   EyeIcon,
 } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 
 interface DashboardProps {
   applications: Application[];
@@ -24,6 +25,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ applications = [], user }: DashboardProps) {
+  const t = useTranslations();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -89,7 +91,9 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
               <AcademicCapIcon className='h-6 w-6 text-blue-600' />
             </div>
             <div className='ml-3'>
-              <p className='text-sm font-medium text-gray-600'>总申请</p>
+              <p className='text-sm font-medium text-gray-600'>
+                {t('dashboard.totalApplications')}
+              </p>
               <p className='text-2xl font-bold text-gray-900'>
                 {totalApplications}
               </p>
@@ -103,7 +107,9 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
               <CheckCircleIcon className='h-6 w-6 text-green-600' />
             </div>
             <div className='ml-3'>
-              <p className='text-sm font-medium text-gray-600'>已提交</p>
+              <p className='text-sm font-medium text-gray-600'>
+                {t('dashboard.submittedApplications')}
+              </p>
               <p className='text-2xl font-bold text-gray-900'>
                 {submittedApplications}
               </p>
@@ -114,10 +120,14 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
 
       {/* 进度概览 */}
       <div className='bg-white rounded-lg shadow p-6'>
-        <h3 className='text-lg font-semibold text-gray-900 mb-4'>申请进度</h3>
+        <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+          {t('dashboard.applicationProgress')}
+        </h3>
         <div className='space-y-3'>
           <div className='flex justify-between items-center'>
-            <span className='text-sm text-gray-600'>未开始</span>
+            <span className='text-sm text-gray-600'>
+              {t('application.statusOptions.notStarted')}
+            </span>
             <span className='text-sm font-medium text-gray-900'>
               {notStartedApplications}
             </span>
@@ -136,7 +146,9 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
           </div>
 
           <div className='flex justify-between items-center'>
-            <span className='text-sm text-gray-600'>进行中</span>
+            <span className='text-sm text-gray-600'>
+              {t('application.statusOptions.inProgress')}
+            </span>
             <span className='text-sm font-medium text-gray-900'>
               {inProgressApplications}
             </span>
@@ -155,7 +167,9 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
           </div>
 
           <div className='flex justify-between items-center'>
-            <span className='text-sm text-gray-600'>已提交</span>
+            <span className='text-sm text-gray-600'>
+              {t('application.statusOptions.submitted')}
+            </span>
             <span className='text-sm font-medium text-gray-900'>
               {submittedApplications}
             </span>
@@ -178,22 +192,30 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
       {/* 决定结果 */}
       {submittedApplications > 0 && (
         <div className='bg-white rounded-lg shadow p-6'>
-          <h3 className='text-lg font-semibold text-gray-900 mb-4'>决定结果</h3>
+          <h3 className='text-lg font-semibold text-gray-900 mb-4'>
+            {t('dashboard.decisionResults')}
+          </h3>
           <div className='space-y-3'>
             <div className='flex justify-between items-center'>
-              <span className='text-sm text-gray-600'>录取</span>
+              <span className='text-sm text-gray-600'>
+                {t('application.decisionOptions.accepted')}
+              </span>
               <span className='text-sm font-medium text-green-600'>
                 {acceptedApplications}
               </span>
             </div>
             <div className='flex justify-between items-center'>
-              <span className='text-sm text-gray-600'>拒绝</span>
+              <span className='text-sm text-gray-600'>
+                {t('application.decisionOptions.rejected')}
+              </span>
               <span className='text-sm font-medium text-red-600'>
                 {rejectedApplications}
               </span>
             </div>
             <div className='flex justify-between items-center'>
-              <span className='text-sm text-gray-600'>候补</span>
+              <span className='text-sm text-gray-600'>
+                {t('application.decisionOptions.waitlisted')}
+              </span>
               <span className='text-sm font-medium text-yellow-600'>
                 {waitlistedApplications}
               </span>
@@ -207,7 +229,7 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
         <div className='bg-white rounded-lg shadow p-6'>
           <h3 className='text-lg font-semibold text-gray-900 mb-4 flex items-center'>
             <ClockIcon className='h-5 w-5 text-yellow-500 mr-2' />
-            即将到期
+            {t('dashboard.upcomingDeadlines')}
           </h3>
           <div className='space-y-3'>
             {upcomingDeadlines.map((application) => (
@@ -237,7 +259,7 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
         <div className='bg-white rounded-lg shadow p-6'>
           <h3 className='text-lg font-semibold text-gray-900 mb-4 flex items-center'>
             <ExclamationTriangleIcon className='h-5 w-5 text-red-500 mr-2' />
-            逾期申请
+            {t('dashboard.overdueApplications')}
           </h3>
           <div className='space-y-3'>
             {overdueApplications.map((application) => (
@@ -261,40 +283,6 @@ export default function Dashboard({ applications = [], user }: DashboardProps) {
           </div>
         </div>
       )}
-
-      {/* 通用快速操作 */}
-      {/* <div className='bg-white rounded-lg shadow p-6'>
-        <h3 className='text-lg font-semibold text-gray-900 mb-4'>快速操作</h3>
-        <div className='space-y-3'>
-          <button className='w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors'>
-            <div className='flex items-center'>
-              <ChartBarIcon className='h-5 w-5 text-blue-500 mr-3' />
-              <span className='text-sm font-medium text-gray-900'>
-                查看详细统计
-              </span>
-            </div>
-          </button>
-          <button className='w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors'>
-            <div className='flex items-center'>
-              <ClockIcon className='h-5 w-5 text-green-500 mr-3' />
-              <span className='text-sm font-medium text-gray-900'>
-                设置提醒
-              </span>
-            </div>
-          </button>
-
-          {user?.role === UserRole.PARENT && (
-            <button className='w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors'>
-              <div className='flex items-center'>
-                <EyeIcon className='h-5 w-5 text-indigo-500 mr-3' />
-                <span className='text-sm font-medium text-gray-900'>
-                  查看孩子详情
-                </span>
-              </div>
-            </button>
-          )}
-        </div>
-      </div> */}
     </div>
   );
 }

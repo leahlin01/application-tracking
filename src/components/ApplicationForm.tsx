@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { University, ApplicationType } from '@/types';
+import { getApplicationTypeKey } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface ApplicationFormProps {
   university: University;
@@ -19,6 +21,7 @@ export default function ApplicationForm({
   onSubmit,
   onCancel,
 }: ApplicationFormProps) {
+  const t = useTranslations();
   const [formData, setFormData] = useState({
     applicationType: ApplicationType.REGULAR_DECISION,
     deadline: '',
@@ -31,21 +34,6 @@ export default function ApplicationForm({
       universityId: university.id,
       ...formData,
     });
-  };
-
-  const getApplicationTypeText = (type: ApplicationType) => {
-    switch (type) {
-      case ApplicationType.EARLY_DECISION:
-        return '提前决定 (Early Decision)';
-      case ApplicationType.EARLY_ACTION:
-        return '提前行动 (Early Action)';
-      case ApplicationType.REGULAR_DECISION:
-        return '常规决定 (Regular Decision)';
-      case ApplicationType.ROLLING_ADMISSION:
-        return '滚动录取 (Rolling Admission)';
-      default:
-        return type;
-    }
   };
 
   return (
@@ -79,7 +67,7 @@ export default function ApplicationForm({
         >
           {Object.values(ApplicationType).map((type) => (
             <option key={type} value={type}>
-              {getApplicationTypeText(type)}
+              {t(getApplicationTypeKey(type))}
             </option>
           ))}
         </select>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { University } from '@/types';
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 
 interface UniversityComparisonProps {
   universities: University[];
@@ -17,6 +18,7 @@ export default function UniversityComparison({
   onSelectionChange,
   isVisible,
 }: UniversityComparisonProps) {
+  const t = useTranslations();
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredUniversities = universities.filter(
@@ -50,14 +52,14 @@ export default function UniversityComparison({
       <div className='space-y-4'>
         <div className='flex justify-between items-center'>
           <h4 className='text-lg font-medium text-gray-900'>
-            选择要比较的大学
+            {t('university.selectUniversitiesToCompare')}
           </h4>
           {selectedUniversities.length > 0 && (
             <button
               onClick={clearAll}
               className='text-sm text-red-600 hover:text-red-800 font-medium'
             >
-              清空选择
+              {t('university.clearSelection')}
             </button>
           )}
         </div>
@@ -66,7 +68,7 @@ export default function UniversityComparison({
         <div className='relative'>
           <input
             type='text'
-            placeholder='搜索大学名称、城市或州...'
+            placeholder={t('university.searchPlaceholderCompare')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -76,7 +78,9 @@ export default function UniversityComparison({
         {/* 大学选择按钮 */}
         <div className='space-y-3'>
           <h5 className='text-sm font-medium text-gray-700'>
-            可选择的大学 ({filteredUniversities.length})
+            {t('university.availableUniversities', {
+              count: filteredUniversities.length,
+            })}
           </h5>
           <div className='flex flex-wrap gap-2 max-h-32 overflow-y-auto'>
             {filteredUniversities.slice(0, 20).map((uni) => (
@@ -103,10 +107,12 @@ export default function UniversityComparison({
         <div className='space-y-4'>
           <div className='flex justify-between items-center'>
             <h4 className='text-lg font-medium text-gray-900'>
-              比较结果 ({selectedUniversities.length} 所大学)
+              {t('university.comparisonResults', {
+                count: selectedUniversities.length,
+              })}
             </h4>
             <div className='text-sm text-gray-500'>
-              支持横向滚动查看更多内容
+              {t('university.scrollHint')}
             </div>
           </div>
 
@@ -118,7 +124,7 @@ export default function UniversityComparison({
                   <thead>
                     <tr className='bg-gray-50'>
                       <th className='text-left p-4 text-sm font-semibold text-gray-900 bg-gray-50 sticky left-0 z-10 border-r border-gray-200 min-w-[180px]'>
-                        比较项目
+                        {t('university.comparisonItems.comparisonItems')}
                       </th>
                       {selectedUniversities.map((uni) => (
                         <th
@@ -132,7 +138,7 @@ export default function UniversityComparison({
                             <button
                               onClick={() => removeUniversity(uni.id)}
                               className='text-gray-400 hover:text-red-600 p-1 rounded-full hover:bg-gray-100 transition-colors'
-                              title='移除大学'
+                              title={t('university.removeUniversity')}
                             >
                               <XMarkIcon className='h-4 w-4' />
                             </button>
@@ -145,7 +151,7 @@ export default function UniversityComparison({
                     {/* 基本信息 */}
                     <tr className='border-b border-gray-100'>
                       <td className='p-4 text-sm font-medium text-gray-700 bg-gray-50 sticky left-0 z-10 border-r border-gray-200'>
-                        基本信息
+                        {t('university.comparisonItems.basicInfo')}
                       </td>
                       {selectedUniversities.map((uni) => (
                         <td
@@ -167,7 +173,7 @@ export default function UniversityComparison({
                     {/* 排名 */}
                     <tr className='border-b border-gray-100'>
                       <td className='p-4 text-sm font-medium text-gray-700 bg-gray-50 sticky left-0 z-10 border-r border-gray-200'>
-                        US News排名
+                        {t('university.comparisonItems.usNewsRanking')}
                       </td>
                       {selectedUniversities.map((uni) => (
                         <td
@@ -179,7 +185,9 @@ export default function UniversityComparison({
                               #{uni.usNewsRanking}
                             </span>
                           ) : (
-                            <span className='text-gray-400'>N/A</span>
+                            <span className='text-gray-400'>
+                              {t('common.na')}
+                            </span>
                           )}
                         </td>
                       ))}
@@ -188,7 +196,7 @@ export default function UniversityComparison({
                     {/* 录取率 */}
                     <tr className='border-b border-gray-100'>
                       <td className='p-4 text-sm font-medium text-gray-700 bg-gray-50 sticky left-0 z-10 border-r border-gray-200'>
-                        录取率
+                        {t('university.comparisonItems.acceptanceRate')}
                       </td>
                       {selectedUniversities.map((uni) => (
                         <td
@@ -200,7 +208,9 @@ export default function UniversityComparison({
                               {(uni.acceptanceRate * 100).toFixed(1)}%
                             </span>
                           ) : (
-                            <span className='text-gray-400'>N/A</span>
+                            <span className='text-gray-400'>
+                              {t('common.na')}
+                            </span>
                           )}
                         </td>
                       ))}
@@ -209,7 +219,7 @@ export default function UniversityComparison({
                     {/* 学费 */}
                     <tr className='border-b border-gray-100'>
                       <td className='p-4 text-sm font-medium text-gray-700 bg-gray-50 sticky left-0 z-10 border-r border-gray-200'>
-                        年学费 (州外)
+                        {t('university.comparisonItems.annualTuition')}
                       </td>
                       {selectedUniversities.map((uni) => (
                         <td
@@ -221,7 +231,9 @@ export default function UniversityComparison({
                               ${uni.tuitionOutState.toLocaleString()}
                             </span>
                           ) : (
-                            <span className='text-gray-400'>N/A</span>
+                            <span className='text-gray-400'>
+                              {t('common.na')}
+                            </span>
                           )}
                         </td>
                       ))}
@@ -230,7 +242,7 @@ export default function UniversityComparison({
                     {/* 申请费 */}
                     <tr className='border-b border-gray-100'>
                       <td className='p-4 text-sm font-medium text-gray-700 bg-gray-50 sticky left-0 z-10 border-r border-gray-200'>
-                        申请费
+                        {t('university.comparisonItems.applicationFee')}
                       </td>
                       {selectedUniversities.map((uni) => (
                         <td
@@ -242,7 +254,9 @@ export default function UniversityComparison({
                               ${uni.applicationFee}
                             </span>
                           ) : (
-                            <span className='text-gray-400'>N/A</span>
+                            <span className='text-gray-400'>
+                              {t('common.na')}
+                            </span>
                           )}
                         </td>
                       ))}
@@ -251,7 +265,7 @@ export default function UniversityComparison({
                     {/* 申请系统 */}
                     <tr className='border-b border-gray-100'>
                       <td className='p-4 text-sm font-medium text-gray-700 bg-gray-50 sticky left-0 z-10 border-r border-gray-200'>
-                        申请系统
+                        {t('university.comparisonItems.applicationSystem')}
                       </td>
                       {selectedUniversities.map((uni) => (
                         <td
@@ -268,7 +282,7 @@ export default function UniversityComparison({
                     {/* 截止日期 */}
                     <tr className='border-b border-gray-100'>
                       <td className='p-4 text-sm font-medium text-gray-700 bg-gray-50 sticky left-0 z-10 border-r border-gray-200'>
-                        主要截止日期
+                        {t('university.comparisonItems.mainDeadline')}
                       </td>
                       {selectedUniversities.map((uni) => (
                         <td
@@ -278,14 +292,18 @@ export default function UniversityComparison({
                           {uni.deadlines?.regular ? (
                             <div className='space-y-1'>
                               <div className='font-medium text-gray-900'>
-                                常规申请
+                                {t(
+                                  'university.comparisonItems.regularApplication'
+                                )}
                               </div>
                               <div className='text-xs text-gray-500'>
                                 {uni.deadlines.regular}
                               </div>
                             </div>
                           ) : (
-                            <span className='text-gray-400'>N/A</span>
+                            <span className='text-gray-400'>
+                              {t('common.na')}
+                            </span>
                           )}
                         </td>
                       ))}
@@ -298,7 +316,7 @@ export default function UniversityComparison({
 
           {/* 滚动提示 */}
           <div className='text-center text-sm text-gray-500 bg-gray-50 p-3 rounded-lg'>
-            💡 提示：在移动设备上可以左右滑动查看更多比较内容
+            {t('university.mobileScrollHint')}
           </div>
         </div>
       )}

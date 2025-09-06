@@ -4,7 +4,6 @@ import {
   UserRole,
   ApplicationType,
 } from '@prisma/client';
-import { Navigation } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import ApplicationForm from './ApplicationForm';
@@ -16,6 +15,7 @@ import { StudentBinding } from './StudentBinding';
 import { useToast, ToastContainer } from './Toast';
 import UniversityComparison from './UniversityComparison';
 import UniversitySearch from './UniversitySearch';
+import { Navigation } from './Navigation';
 
 export default function MainApplication() {
   const t = useTranslations();
