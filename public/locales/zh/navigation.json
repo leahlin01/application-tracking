@@ -1,0 +1,9 @@
+{
+  "title": "大学申请管理平台",
+  "welcome": "欢迎, {email} ({role})",
+  "logout": "退出登录",
+  "roles": {
+    "student": "学生",
+    "parent": "家长"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "title": "University Application Management Platform",
+  "welcome": "Welcome, {email} ({role})",
+  "logout": "Logout",
+  "roles": {
+    "student": "Student",
+    "parent": "Parent"
+  }
+}
